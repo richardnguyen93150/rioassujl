@@ -297,8 +297,6 @@ function genScript(c) {
     'function fa(name,val){if(!val)return;var el=document.querySelector("[name="+JSON.stringify(name)+"]");if(!el)return;el.focus();var nv=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;nv.call(el,val);["input","change","keydown","keyup"].forEach(function(e){el.dispatchEvent(new Event(e,{bubbles:true}));});setTimeout(function(){var o=document.querySelectorAll("[class*=option],[role=option]");if(o[0])o[0].click();},700);}' +
     'setTimeout(function(){' +
     'vs(bn("/owner_firstname"),' + JSON.stringify(pn) + ');' +
-    // email rempli séparément ci-dessous
-    
     'vs(bn("/owner_lastname"),' + JSON.stringify(nn) + ');' +
     'vs(bn("/address"),' + JSON.stringify(s(c.Rue||'')) + ');' +
     'vs(bp("+33"),' + JSON.stringify(tel) + ');' +
@@ -310,8 +308,7 @@ function genScript(c) {
     'var df=document.querySelectorAll("input[placeholder=\\"jj/mm/aaaa\\"]");' +
     'if(df[0])vs(df[0],' + JSON.stringify(s(c.DateNaissance||'')) + ');' +
     'if(df[1])vs(df[1],' + JSON.stringify(s(c.DatePermisB||'')) + ');' +
-    'alert("OK ' + pn + ' ' + nn + ' — Vérifiez les dropdowns !");' +
-    'setTimeout(function(){var em=document.getElementById("v-0-0-0");if(em){var p=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;p.call(em,' + JSON.stringify(s(c.Email||'')) + ');["input","change","blur"].forEach(function(e){em.dispatchEvent(new Event(e,{bubbles:true}));});}},800);' +
+    'vs(bn("/email"),' + JSON.stringify(s(c.Email||'')) + ');' + 'alert("OK ' + pn + ' ' + nn + ' — Vérifiez les dropdowns !");' +
     '},400);' +
     '})();';
   return script;
