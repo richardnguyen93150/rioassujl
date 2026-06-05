@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RIO ASSURANCE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#080808; --s:#0f0f0f; --s2:#181818; --s3:#202020;
+  --a:#ff4500; --a2:#ff7700; --g:#00d67a; --y:#ffcc00;
+  --t:#f0f0f0; --m:#555; --b:#252525; --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding-bottom:90px;}
+header{background:var(--s);border-bottom:2px solid var(--a);padding:14px 18px 12px;position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:baseline;gap:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--a);letter-spacing:3px;}
+.logo em{color:var(--t);font-style:normal;}
+.version{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--m);letter-spacing:1px;}
+.sync-btn{background:var(--a);border:none;border-radius:8px;color:#fff;font-size:.72rem;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;font-family:'IBM Plex Sans',sans-serif;font-weight:600;}
+.sync-btn:active{opacity:.8;}
+.sync-btn.spinning .ic{animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#cfg{background:linear-gradient(90deg,#0f0800,#0f0d00);border-bottom:1px solid #333;padding:0;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;}
+#cfg.open{max-height:200px;padding:14px 18px;}
+.cfg-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+.cfg-row{display:flex;flex-direction:column;gap:4px;}
+.cfg-label{font-size:.63rem;color:var(--m);text-transform:uppercase;letter-spacing:.4px;font-family:'IBM Plex Mono',monospace;}
+.cfg-input{background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--t);font-family:'IBM Plex Mono',monospace;font-size:.7rem;padding:8px 11px;outline:none;}
+.cfg-input:focus{border-color:var(--a);}
+.cfg-save{background:var(--a);color:#fff;border:none;border-radius:6px;padding:9px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;margin-top:4px;}
+.stats{display:flex;background:var(--s);border-bottom:1px solid var(--b);padding:0;}
+.stat{flex:1;padding:10px 6px;text-align:center;border-right:1px solid var(--b);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--a);line-height:1;}
+.stat-l{font-size:.58rem;color:var(--m);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.filters{display:flex;gap:8px;padding:14px 18px 0;overflow-x:auto;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-chip{background:var(--s2);border:1px solid var(--b);border-radius:20px;padding:6px 14px;font-size:.72rem;color:var(--m);cursor:pointer;white-space:nowrap;transition:all .15s;font-weight:500;}
+.filter-chip.active{background:var(--a);border-color:var(--a);color:#fff;}
+.search-wrap{padding:10px 18px 0;}
+.search-input{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;color:var(--t);font-family:'IBM Plex Sans',sans-serif;font-size:.85rem;padding:10px 14px;outline:none;}
+.search-input:focus{border-color:var(--a);}
+.search-input::placeholder{color:var(--m);}
+#clientList{padding:12px 18px;}
+.client-card{background:var(--s);border:1px solid var(--b);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.client-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--b);transition:background .2s;}
+.client-card.nouveau::before{background:var(--g);}
+.client-card.traite::before{background:var(--m);}
+.client-card:active{transform:scale(.985);border-color:var(--a);}
+.card-top{display:flex;align-items:center;gap:11px;margin-bottom:8px;}
+.avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#fff;background:linear-gradient(135deg,var(--a),var(--a2));}
+.card-main{flex:1;min-width:0;}
+.card-name{font-weight:600;font-size:.95rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-email{font-size:.7rem;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-badge{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:5px;flex-shrink:0;background:var(--a);color:#fff;}
+.card-badge.miss{background:var(--s3);color:var(--y);border:1px solid var(--y);}
+.card-badge.done{background:var(--s3);color:var(--m);border:1px solid var(--b);}
+.card-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.cf{background:var(--s2);border-radius:5px;padding:5px 7px;}
+.cf-k{font-size:.55rem;color:var(--m);text-transform:uppercase;letter-spacing:.3px;margin-bottom:1px;font-family:'IBM Plex Mono',monospace;}
+.cf-v{font-size:.72rem;color:var(--t);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cf-v.ms{color:var(--y);}
+.card-actions{display:flex;gap:8px;margin-top:10px;}
+.act-btn{flex:1;padding:10px;border-radius:7px;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);user-select:none;-webkit-user-select:none;}
+.act-btn:active{transform:scale(.96);}
+.act-fill{background:var(--a);color:#fff;}
+.act-copy{background:var(--s2);color:#7dd3fc;border:1px solid #1e3a5f;font-family:'IBM Plex Mono',monospace;font-size:.73rem;}
+#modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);display:none;align-items:flex-end;justify-content:center;}
+#modal.show{display:flex;}
+.modal-box{background:var(--s);border:1px solid var(--b);border-radius:16px 16px 0 0;width:100%;max-width:500px;padding:20px 18px 30px;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--a);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{background:none;border:none;color:var(--m);font-size:1.2rem;cursor:pointer;padding:4px;}
+.mbtn{width:100%;padding:14px;border-radius:8px;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.mbtn:active{transform:scale(.97);}
+.mbtn-fire{background:var(--a);color:#fff;}
+.mbtn-mono{background:var(--s2);color:#7dd3fc;border:1px solid #1e3a5f;font-family:'IBM Plex Mono',monospace;font-size:.8rem;}
+.empty{text-align:center;padding:50px 20px;color:var(--m);}
+.empty-icon{font-size:2.8rem;margin-bottom:14px;}
+.empty p{font-size:.85rem;line-height:1.7;}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s);border:1px solid var(--a);color:var(--t);padding:10px 20px;border-radius:50px;font-size:.8rem;font-weight:600;z-index:200;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.loading{display:none;text-align:center;padding:40px 20px;}
+.loading.show{display:block;}
+.spinner{width:32px;height:32px;border:3px solid var(--s3);border-top-color:var(--a);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+.loading p{font-size:.8rem;color:var(--m);font-family:'IBM Plex Mono',monospace;}
+.cfg-toggle{font-size:.65rem;color:var(--m);text-decoration:none;padding:2px 6px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">RIO<em>ASSU</em></div>
+    <div class="version">v3.1 LIVE</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span class="cfg-toggle" onclick="toggleCfg()">⚙️</span>
+    <button class="sync-btn" id="traitBtn" onclick="traiterEmails()"><span>📧</span> EMAILS</button>
+    <button class="sync-btn" id="syncBtn" onclick="syncSheet()"><span class="ic">↻</span> SYNC</button>
+  </div>
+</header>
+
+<div id="cfg">
+  <div class="cfg-grid">
+    <div class="cfg-row">
+      <label class="cfg-label">Google Sheet ID</label>
+      <input class="cfg-input" id="sheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+    </div>
+    <div class="cfg-row">
+      <label class="cfg-label">Google API Key</label>
+      <input class="cfg-input" id="gApiKey" placeholder="AIzaSy...">
+    </div>
+  </div>
+  <button class="cfg-save" onclick="saveConfig()">💾 Sauvegarder</button>
+</div>
+
+<div class="stats" id="statsBar" style="display:none">
+  <div class="stat"><div class="stat-n" id="statTotal">0</div><div class="stat-l">Total</div></div>
+  <div class="stat"><div class="stat-n" id="statNew">0</div><div class="stat-l">Nouveaux</div></div>
+  <div class="stat"><div class="stat-n" id="statDone">0</div><div class="stat-l">Traités</div></div>
+</div>
+
+<div class="filters" id="filterBar" style="display:none">
+  <div class="filter-chip active" onclick="setFilter('tous',this)">Tous</div>
+  <div class="filter-chip" onclick="setFilter('NOUVEAU',this)">🟢 Nouveaux</div>
+  <div class="filter-chip" onclick="setFilter('TRAITE',this)">✅ Traités</div>
+</div>
+
+<div class="search-wrap" id="searchWrap" style="display:none">
+  <input class="search-input" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="renderList()">
+</div>
+
+<div id="clientList">
+  <div class="empty" id="emptyState">
+    <div class="empty-icon">📡</div>
+    <p>Configurez votre Google Sheet<br>puis appuyez sur <strong>SYNC</strong><br>pour charger vos clients.</p>
+  </div>
+</div>
+<div class="loading" id="loadingState">
+  <div class="spinner"></div>
+  <p>Chargement depuis Google Sheets...</p>
+</div>
+
+<div id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modalClientName">REMPLIR</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalPreview" style="margin-bottom:14px;font-size:.8rem;line-height:1.8;"></div>
+    <button class="mbtn mbtn-fire" id="btnOuvrirSimpl">🚀 REMPLIR SIMPLIFIEURS</button>
+    <button class="mbtn mbtn-mono" onclick="copyModalScript()">📋 COPIER SCRIPT (PC/Console)</button>
+    <div style="font-size:.7rem;color:var(--m);text-align:center;margin-top:4px;">PC : F12 → Console → coller → Entrée</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyRxvfNhxVInDsrwvd4gguaqjFAg2LteYrC5pIN2Mk1Ou6nGj0nHr7KH-7XZoH5y2Ytmw/exec';
+var CFG = { sheetId: localStorage.getItem('sheetId') || '', gApiKey: localStorage.getItem('gApiKey') || '' };
+var allClients = [];
+var currentFilter = 'tous';
+var currentScript = '';
+
+document.getElementById('sheetId').value = CFG.sheetId;
+document.getElementById('gApiKey').value = CFG.gApiKey;
+
+async function traiterEmails() {
+  var btn = document.getElementById('traitBtn');
+  btn.textContent = '⏳...';
+  btn.disabled = true;
+  try {
+    await fetch(GAS_URL, {method:'GET', mode:'no-cors'});
+    toast('✅ Traitement lancé ! Sheet mis à jour dans 15s');
+    setTimeout(function(){ syncSheet(); }, 15000);
+  } catch(e) {
+    toast('❌ ' + e.message);
+  } finally {
+    setTimeout(function(){ btn.textContent = '📧 EMAILS'; btn.disabled = false; }, 3000);
+  }
+}
+
+function saveConfig() {
+  CFG.sheetId = document.getElementById('sheetId').value.trim();
+  CFG.gApiKey = document.getElementById('gApiKey').value.trim();
+  localStorage.setItem('sheetId', CFG.sheetId);
+  localStorage.setItem('gApiKey', CFG.gApiKey);
+  toggleCfg();
+  toast('✅ Configuration sauvegardée');
+  if (CFG.sheetId && CFG.gApiKey) syncSheet();
+}
+
+function toggleCfg() { document.getElementById('cfg').classList.toggle('open'); }
+
+async function syncSheet() {
+  if (!CFG.sheetId || !CFG.gApiKey) { document.getElementById('cfg').classList.add('open'); toast('⚙️ Configurez d\'abord'); return; }
+  var btn = document.getElementById('syncBtn');
+  btn.classList.add('spinning');
+  document.getElementById('loadingState').classList.add('show');
+  document.getElementById('clientList').style.display = 'none';
+  try {
+    var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + CFG.sheetId + '/values/Clients?key=' + CFG.gApiKey;
+    var resp = await fetch(url);
+    var data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+    var rows = data.values || [];
+    if (!rows || rows.length < 2) { allClients = []; renderList(); toast('ℹ️ Aucun client'); return; }
+    var headers = rows[0];
+    allClients = rows.slice(1).map(function(row) {
+      var obj = {};
+      headers.forEach(function(h, i) { obj[h] = row[i] || ''; });
+      return obj;
+    }).reverse();
+    renderList();
+    updateStats();
+    toast('✅ ' + allClients.length + ' clients chargés');
+  } catch(e) {
+    toast('❌ ' + e.message);
+  } finally {
+    btn.classList.remove('spinning');
+    document.getElementById('loadingState').classList.remove('show');
+    document.getElementById('clientList').style.display = 'block';
+  }
+}
+
+function updateStats() {
+  var total = allClients.length;
+  var nouveaux = allClients.filter(function(c){ return c.Statut==='NOUVEAU'; }).length;
+  var traites = allClients.filter(function(c){ return c.Statut==='TRAITE'; }).length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statNew').textContent = nouveaux;
+  document.getElementById('statDone').textContent = traites;
+  document.getElementById('statsBar').style.display = total ? 'flex' : 'none';
+  document.getElementById('filterBar').style.display = total ? 'flex' : 'none';
+  document.getElementById('searchWrap').style.display = total ? 'block' : 'none';
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  var q = (document.getElementById('searchInput').value || '').toLowerCase();
+  var filtered = allClients.filter(function(c) {
+    if (currentFilter !== 'tous' && c.Statut !== currentFilter) return false;
+    if (q) { var txt = [c.Prenom,c.Nom,c.Telephone,c.Immatriculation,c.Email].join(' ').toLowerCase(); if (txt.indexOf(q)<0) return false; }
+    return true;
+  });
+  var container = document.getElementById('clientList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">'+(allClients.length?'🔍':'📡')+'</div><p>'+(allClients.length?'Aucun résultat':'Appuyez sur SYNC')+'</p></div>';
+    return;
+  }
+  container.innerHTML = '';
+  filtered.forEach(function(c, i) {
+    var p = c.Prenom||'?'; var n = c.Nom||'?';
+    var init = (p[0]+n[0]).toUpperCase();
+    var hasPlate = c.Immatriculation && c.Immatriculation !== 'NON TROUVE';
+    var isDone = c.Statut==='TRAITE'; var isNew = c.Statut==='NOUVEAU';
+    var fields = [{k:'Date effet',v:c.DateEffet},{k:'Naissance',v:c.DateNaissance},{k:'Permis B',v:c.DatePermisB}];
+    var card = document.createElement('div');
+    card.className = 'client-card '+(isNew?'nouveau':isDone?'traite':'');
+    card.innerHTML =
+      '<div class="card-top"><div class="avatar">'+init+'</div><div class="card-main"><div class="card-name">'+p+' '+n+'</div><div class="card-email">'+(c.Email||'')+'</div></div><div class="card-badge '+(hasPlate?'':' miss')+(isDone?' done':'')+'">'+( c.Immatriculation||'?')+'</div></div>'+
+      '<div class="card-fields">'+fields.map(function(f){ var ms=!f.v||f.v==='NON TROUVE'; return '<div class="cf"><div class="cf-k">'+f.k+'</div><div class="cf-v'+(ms?' ms':'')+'">'+( f.v||'—')+'</div></div>'; }).join('')+'</div>'+
+      '<div class="card-actions"><button class="act-btn act-fill" id="btn-fill-'+i+'">🚀 SIMPLIFIEURS</button><button class="act-btn act-copy" id="btn-copy-'+i+'">📋 SCRIPT</button></div>';
+    container.appendChild(card);
+    var btnFill = document.getElementById('btn-fill-'+i);
+    var btnCopy = document.getElementById('btn-copy-'+i);
+    btnFill.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); ouvrirModal(e,i); });
+    btnFill.addEventListener('click', function(e){ e.stopPropagation(); ouvrirModal(e,i); });
+    btnCopy.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); copierScript(e,i); });
+    btnCopy.addEventListener('click', function(e){ e.stopPropagation(); copierScript(e,i); });
+  });
+}
+
+// ── GÉNÉRATION SCRIPT — CORRIGÉ ──────────────────────────
+function genScript(c) {
+  function s(v) { return (v && v !== 'NON TROUVE') ? v : ''; }
+  var pn = s(c.Prenom||'');
+  var nn = s(c.Nom||'');
+  var tel = s((c.Telephone||'').toString());
+  if (tel && tel.charAt(0)==='0') tel = '+33 ' + tel.substring(1);
+
+  var script = '(function(){' +
+    'function vs(el,val){if(!el)return;var p=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;p.call(el,val);["input","change","blur"].forEach(function(e){el.dispatchEvent(new Event(e,{bubbles:true}));});}' +
+    'function bn(n){return document.querySelector("[name="+JSON.stringify(n)+"]");}' +
+    'function bp(p){return document.querySelector("[placeholder*="+JSON.stringify(p)+"]");}' +
+    'function fa(name,val){if(!val)return;var el=document.querySelector("[name="+JSON.stringify(name)+"]");if(!el)return;el.focus();var nv=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;nv.call(el,val);["input","change","keydown","keyup"].forEach(function(e){el.dispatchEvent(new Event(e,{bubbles:true}));});setTimeout(function(){var o=document.querySelectorAll("[class*=option],[role=option]");if(o[0])o[0].click();},700);}' +
+    'setTimeout(function(){' +
+    'vs(bn("/owner_firstname"),' + JSON.stringify(pn) + ');' +
+    'vs(bn("/owner_lastname"),' + JSON.stringify(nn) + ');' +
+    'vs(bn("/address"),' + JSON.stringify(s(c.Rue||'')) + ');' +
+    'vs(bp("+33"),' + JSON.stringify(tel) + ');' +
+    'vs(bn("car.plate_number"),' + JSON.stringify(s(c.Immatriculation||'')) + ');' +
+    'fa("shortterm_vehicle_registration_country","France");' +
+    'fa("shortterm_vehicle_brand_id",' + JSON.stringify(s(c.Marque||'')) + ');' +
+    'setTimeout(function(){fa("shortterm_vehicle_model_id",' + JSON.stringify(s(c.Modele||'')) + ');},1200);' +
+    'vs(bn("shortterm_driver_driving_licence_registration_number"),' + JSON.stringify(s(c.NumeroPermis||'')) + ');' +
+    'var df=document.querySelectorAll("input[placeholder=\\"jj/mm/aaaa\\"]");' +
+    'if(df[0])vs(df[0],' + JSON.stringify(s(c.DateNaissance||'')) + ');' +
+    'if(df[1])vs(df[1],' + JSON.stringify(s(c.DatePermisB||'')) + ');' +
+    'alert("OK ' + pn + ' ' + nn + ' — Vérifiez les dropdowns !");' +
+    '},400);' +
+    '})();';
+  return script;
+}
+
+function getFilteredClient(i) {
+  var q = (document.getElementById('searchInput').value||'').toLowerCase();
+  return allClients.filter(function(c) {
+    if (currentFilter!=='tous' && c.Statut!==currentFilter) return false;
+    if (q) { var txt=[c.Prenom,c.Nom,c.Telephone,c.Immatriculation,c.Email].join(' ').toLowerCase(); if(txt.indexOf(q)<0) return false; }
+    return true;
+  })[i];
+}
+
+function ouvrirModal(evt, i) {
+  if (evt) { evt.preventDefault(); evt.stopPropagation(); }
+  var c = getFilteredClient(i);
+  if (!c) { toast('Client non trouvé'); return; }
+  currentScript = genScript(c);
+  localStorage.setItem('rioCurrentClient', JSON.stringify(c));
+  document.getElementById('modalClientName').textContent = (c.Prenom||'')+' '+(c.Nom||'');
+  document.getElementById('modalPreview').innerHTML =
+    '<b>🚗</b> '+(c.Immatriculation||'—')+' &nbsp;|&nbsp; <b>🏭</b> '+(c.Marque||'—')+' '+(c.Modele||'—')+'<br>'+
+    '<b>🎂</b> '+(c.DateNaissance||'—')+' &nbsp;|&nbsp; <b>🪪</b> '+(c.NumeroPermis||'—')+'<br>'+
+    '<b>📅 Permis B</b> '+(c.DatePermisB||'—');
+  var btn = document.getElementById('btnOuvrirSimpl');
+  btn.onclick = null;
+  btn.addEventListener('click', function(){ lancerRemplissage(c); });
+  btn.addEventListener('touchend', function(e){ e.preventDefault(); lancerRemplissage(c); });
+  document.getElementById('modal').classList.add('show');
+}
+
+function lancerRemplissage(c) {
+  var data = { p:c.Prenom||'', n:c.Nom||'', r:c.Rue||'', t:(c.Telephone||'').toString(), i:c.Immatriculation||'', ma:c.Marque||'', mo:c.Modele||'', np:c.NumeroPermis||'', dn:c.DateNaissance||'', dp:c.DatePermisB||'' };
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var url = 'https://app.simplifieurs.pro/catalog/automobile-temporaire#rio=' + encoded;
+  window.open(url, '_blank');
+  closeModal();
+  toast('Ouvre Simplifieurs puis clique Démarrer un devis');
+}
+
+function copierScript(evt, i) {
+  evt.stopPropagation();
+  var c = getFilteredClient(i);
+  if (!c) return;
+  copyToClipboard(genScript(c));
+  toast('📋 Script copié pour '+(c.Prenom||'')+' '+(c.Nom||''));
+}
+
+function copyModalScript() { copyToClipboard(currentScript); toast('📋 Script copié !'); }
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); }); }
+  else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+}
+
+function closeModal(evt) {
+  if (!evt || evt.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('show');
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+if (CFG.sheetId && CFG.gApiKey) { syncSheet(); }
+else { document.getElementById('cfg').classList.add('open'); }
+</script>
+</body>
+</html>
