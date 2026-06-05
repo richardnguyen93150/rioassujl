@@ -299,16 +299,16 @@ function genScript(c) {
     'vs(bn("/owner_firstname"),' + JSON.stringify(pn) + ');' +
     'vs(bn("/owner_lastname"),' + JSON.stringify(nn) + ');' +
     'vs(bn("/address"),' + JSON.stringify(s(c.Rue||'')) + ');' +
-    'vs(bp("+33"),' + JSON.stringify(tel) + ');' +
+    'vs(document.querySelector("input[placeholder*=\\"+33\\"]"),' + JSON.stringify(tel) + ');' +
     'vs(bn("car.plate_number"),' + JSON.stringify(s(c.Immatriculation||'')) + ');' +
     'fa("shortterm_vehicle_registration_country","France");' +
     'fa("shortterm_vehicle_brand_id",' + JSON.stringify(s(c.Marque||'')) + ');' +
     'setTimeout(function(){fa("shortterm_vehicle_model_id",' + JSON.stringify(s(c.Modele||'')) + ');},1200);' +
     'vs(bn("shortterm_driver_driving_licence_registration_number"),' + JSON.stringify(s(c.NumeroPermis||'')) + ');' +
-    'var df=document.querySelectorAll("input[placeholder=\\"jj/mm/aaaa\\"]");' +
-    'if(df[0])vs(df[0],' + JSON.stringify(s(c.DateNaissance||'')) + ');' +
-    'if(df[1])vs(df[1],' + JSON.stringify(s(c.DatePermisB||'')) + ');' +
-    'vs(bn("/email"),' + JSON.stringify(s(c.Email||'')) + ');' + 'alert("OK ' + pn + ' ' + nn + ' — Vérifiez les dropdowns !");' +
+    'vs(bn("drivingprofile.birth_date"),' + JSON.stringify(s(c.DateNaissance||'')) + ');' +
+    'vs(bn("drivingprofile.driving_licence_date"),' + JSON.stringify(s(c.DatePermisB||'')) + ');' +
+    'alert("OK ' + pn + ' ' + nn + ' — Vérifiez les dropdowns !");' +
+    'setTimeout(function(){var em=document.querySelector("[name=\\"/email\\"]");if(em){var p=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;p.call(em,' + JSON.stringify(s(c.Email||'')) + ');["input","change","blur"].forEach(function(e){em.dispatchEvent(new Event(e,{bubbles:true}));});}},1500);' +
     '},400);' +
     '})();';
   return script;
