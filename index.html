@@ -798,6 +798,10 @@ function renderForm(c) {
           <label>N° Série VIN (E)</label>
           <div class="field-value ${!c.NumeroSerie || c.NumeroSerie==='NON TROUVE' ? 'missing' : ''}" style="font-size:12px">${c.NumeroSerie || '—'}</div>
         </div>
+        <div class="field">
+          <label>Poids F2/G1 (kg) — Sheet</label>
+          <div class="field-value ${!c.PoidsG1 || c.PoidsG1==='NON TROUVE' ? 'missing' : 'orange'}">${c.PoidsG1 && c.PoidsG1 !== 'NON TROUVE' ? c.PoidsG1 + ' kg' : '—'}</div>
+        </div>
 
         <div class="field">
           <label>Catégorie J1</label>
@@ -812,8 +816,8 @@ function renderForm(c) {
           </select>
         </div>
         <div class="field">
-          <label>Poids (kg)</label>
-          <input type="number" id="f-poids" placeholder="ex: 1200">
+          <label>Poids (kg) — F2/G1</label>
+          <input type="number" id="f-poids" placeholder="ex: 1200" value="${c.PoidsG1 && c.PoidsG1 !== 'NON TROUVE' ? c.PoidsG1 : ''}">
         </div>
         <div class="field">
           <label>Nb places assises</label>
@@ -941,7 +945,7 @@ function buildScript() {
     numeroPermis: c.NumeroPermis && c.NumeroPermis !== 'NON TROUVE' ? c.NumeroPermis : '',
     typePermis:   document.getElementById('f-type-permis')?.value || 'B',
     categorie:    document.getElementById('f-categorie')?.value || 'VP',
-    poids:        document.getElementById('f-poids')?.value || '',
+    poids:        document.getElementById('f-poids')?.value || (c.PoidsG1 && c.PoidsG1 !== 'NON TROUVE' ? c.PoidsG1 : ''),
     places:       document.getElementById('f-places')?.value || '5',
     valeur:       document.getElementById('f-valeur')?.value || '',
     location:     document.getElementById('f-location')?.value || 'NON',
@@ -1078,7 +1082,8 @@ function buildJLUrl() {
     t:  addZero(c.Telephone || ''),
     m:  addZero(c.Telephone || ''),
     e:  c.Email || '',
-    de: formatDateJL(c.DateEffet)
+    de: formatDateJL(c.DateEffet),
+    po: c.PoidsG1 && c.PoidsG1 !== 'NON TROUVE' ? c.PoidsG1 : ''
   };
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
   return 'https://www.jlassure.com/sousfiche/gestion_app/index.php?view=Souscription#jl=' + encoded;
@@ -1226,6 +1231,7 @@ function buildStayScript() {
       sv('puissance',        d.cv);
       sv('chassis',          d.vin);
       sv('mise_circulation', d.mc);
+      sv('ptc',              d.po);
       sv('place',            '5');
       sv('date_effet',       d.de);
       sv('telephone_client', d.t);
