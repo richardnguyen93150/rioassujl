@@ -427,6 +427,10 @@
 
 <div class="header">
   <div class="header-logo">R</div>
+  <button onclick="traiterEmails()" id="btn-emails"
+    style="background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+    <span>📧</span> <span id="emails-label">EMAILS</span>
+  </button>
   <h1>RIO <span>ASSURANCE</span> — JLAssure Auto-Fill</h1>
   <div class="header-badge">JL Assure</div>
 </div>
@@ -493,6 +497,7 @@ let filledClients = new Set();
 // CONFIG
 // ============================================================
 const SHEET_ID = '1OwSWHZyu2VeFA0mCZ-KWwJslBguRzecFA45yhq3uEtU';
+const MAIL_SYNC_URL = 'https://rioassu.fr/api_direct/mail-sync/fg9-LV2Djpcf_NI_ZjqpdrCdz3eVS61QFRRFJjjCcGs';
 let gApiKey = localStorage.getItem('jl_gApiKey') || '';
 
 function toggleConfig() {
@@ -522,6 +527,26 @@ function showToast(msg) {
   t.textContent = msg;
   t.style.opacity = '1';
   setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ============================================================
+// TRAITEMENT DES MAILS — déclenche mail_processor.py sur O2Switch
+// ============================================================
+async function traiterEmails() {
+  const btn = document.getElementById('btn-emails');
+  const label = document.getElementById('emails-label');
+  btn.disabled = true;
+  label.textContent = 'Traitement...';
+  try {
+    await fetch(MAIL_SYNC_URL, {method:'GET', mode:'no-cors'});
+    showToast('✅ Traitement lancé ! Sheet mis à jour dans 15s');
+    setTimeout(syncSheet, 15000);
+  } catch(e) {
+    showToast('❌ ' + e.message);
+    console.error(e);
+  } finally {
+    setTimeout(() => { label.textContent = 'Traiter les emails'; btn.disabled = false; }, 3000);
+  }
 }
 
 // ============================================================
